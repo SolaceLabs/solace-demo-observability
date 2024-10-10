@@ -1,0 +1,93 @@
+processors:
+  batch:
+
+exporters:
+  file:
+    path: "./otel.json"
+
+  logging:
+    loglevel: "debug"
+    # encoding: "json"
+    # output_paths: ["./otel.log"]
+
+  otlphttp/jsontest:
+    endpoint: "http://localhost:3317/"
+    compression: "none"
+    encoding: "json"
+    tls:
+      insecure: true
+    headers:
+      Content-Type: "application/json" 
+
+  otlp/jaeger:
+    endpoint: ${JAEGER_EXPORTER_OTLP_ENDPOINT}
+    tls:
+      insecure: true
+
+  otlphttp/newrelic:
+    endpoint: ${NEW_RELIC_EXPORTER_OTLP_ENDPOINT}
+    tls:
+      insecure: false
+    headers:
+      api-key: ${NEW_RELIC_LICENSE_KEY}
+      
+  # otlphttp/dynatrace:
+  #   endpoint: ${DYNATRACE_EXPORTER_OTLP_ENDPOINT}
+  #   headers:
+  #     Authorization: "Api-Token ${DYNATRACE_API_TOKEN}"
+
+  # datadog:
+  #   api:
+  #     site: datadoghq.com
+  #     key: <Key>
+
+  # splunk:
+  #   access_token: "${SPLUNK_ACCESS_TOKEN}"
+  #   endpoint: "${SPLUNK_TRACE_URL}"
+      
+receivers:
+  otlp:
+    protocols:
+      grpc:  # Default port 4317, changed because running Jaeger on localhost too
+        endpoint: 0.0.0.0:4319
+      http:  # Default port 4318, changed because running Jaeger on localhost too
+        endpoint: 0.0.0.0:4320
+        include_metadata: true
+        cors:
+          allowed_origins:
+            - http://*
+            - https://*
+          allowed_headers:
+            - "*"
+
+  solace/broker1:
+    broker : ${SOLACE_BROKER}
+    max_unacknowledged: 500
+    auth:
+      sasl_plain:
+        username: ${SOLACE_USER}
+        password: ${SOLACE_PASS}
+    queue: queue://#telemetry-tp1
+    tls:
+      insecure: false
+      insecure_skip_verify: true
+
+  syslog:
+    udp:
+      listen_address: "0.0.0.0:54526"
+    protocol: rfc3164
+    location: UTC
+
+service:
+  telemetry:
+    logs:
+      level: "debug"
+  pipelines:
+    logs:
+      receivers: [syslog]
+      exporters: [logging, otlphttp/newrelic, otlphttp/jsontest]
+    traces:
+      receivers: [solace/broker1, otlp]
+      processors: [batch]
+#      exporters: [logging, otlp/jaeger, otlphttp/newrelic, otlphttp/dynatrace, otlphttp/jsontest]
+      exporters: [logging, otlp/jaeger, otlphttp/newrelic, otlphttp/jsontest]
