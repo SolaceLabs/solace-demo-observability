@@ -7,7 +7,7 @@ Demo of the Solace PubSub+ monitoring and observability capabilities with focus 
 
 Introduction
 ---
-This Solace PubSub+ observability demo was initially based on work from [@dabgmx] (https://www.github.com/dabgmx) and drew its inspiration from the Solace Codelabs. In addition it also makes use of some tips & tricks from [Benjamin Gottstein] (https://www.github.com/). Everything brought together by [@taatuut] (https://www.github.com/taatuut)
+This Solace PubSub+ observability demo was initially based on work from my colleague Daniel Brunold [@dabgmx] (https://www.github.com/dabgmx) and drew its inspiration from the Solace Codelabs. In addition it also makes use of some tips & tricks from another colleague Benjamin Gottstein. Everything brought together by [@taatuut] (https://www.github.com/taatuut)
 
 Background
 ---
@@ -36,7 +36,7 @@ cd ~/jaeger/jaeger-1.53.0-darwin-amd64/
 ./jaeger-all-in-one
 ```
 
-Or detached `#nohup ./jaeger-all-in-one > /dev/null 2>&1 &`
+Or detached `nohup ./jaeger-all-in-one > /dev/null 2>&1 &`
 
 To stop kill the process with `Control-C`.
 
@@ -72,8 +72,6 @@ To stop kill the process with `Control-C`.
 _Start 3.1	Solace SDKPerf_
 
 SDKPerf acts as both publisher and consumer in this sertup. Topics and queues must be generated upfront, see documentation.
-
-
 
 Run repeatedly every 10 seconds.
 
