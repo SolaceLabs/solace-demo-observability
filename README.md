@@ -7,7 +7,7 @@ Demo of the Solace PubSub+ monitoring and observability capabilities with focus 
 
 Introduction
 ---
-This Solace PubSub+ observability demo was initially based on work from my colleague Daniel Brunold [@dabgmx] (https://www.github.com/dabgmx) and drew its inspiration from the Solace Codelabs. In addition it also makes use of some tips & tricks from another colleague Benjamin Gottstein. Everything brought together by [@taatuut] (https://www.github.com/taatuut)
+This Solace PubSub+ observability demo was initially based on work from my colleague Daniel Brunold [@dabgmx](https://www.github.com/dabgmx) and drew its inspiration from the Solace Codelabs. In addition it also makes use of some tips & tricks from another colleague Benjamin Gottstein [@benjamingottstein](https://github.com/benjamingottstein). Everything brought together by Emil Zegers [@taatuut](https://www.github.com/taatuut)
 
 Background
 ---
