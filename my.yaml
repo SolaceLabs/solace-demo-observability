@@ -1,3 +1,5 @@
+# NOTE: Set environment variables before starting collector.
+
 processors:
   batch:
 
@@ -7,8 +9,8 @@ exporters:
 
   logging:
     loglevel: "debug"
-    # encoding: "json"
-    # output_paths: ["./otel.log"]
+    #encoding: "json"
+    #output_paths: ["./otel.log"]
 
   otlphttp/jsontest:
     endpoint: "http://localhost:3317/"
@@ -30,21 +32,21 @@ exporters:
       insecure: false
     headers:
       api-key: ${NEW_RELIC_LICENSE_KEY}
-      
+
+  datadog:
+    api:
+      site: ${DD_SITE}
+      key: ${DD_API_KEY}
+
   # otlphttp/dynatrace:
   #   endpoint: ${DYNATRACE_EXPORTER_OTLP_ENDPOINT}
   #   headers:
   #     Authorization: "Api-Token ${DYNATRACE_API_TOKEN}"
 
-  # datadog:
-  #   api:
-  #     site: datadoghq.com
-  #     key: <Key>
-
   # splunk:
   #   access_token: "${SPLUNK_ACCESS_TOKEN}"
   #   endpoint: "${SPLUNK_TRACE_URL}"
-      
+
 receivers:
   otlp:
     protocols:
@@ -74,20 +76,30 @@ receivers:
 
   syslog:
     udp:
-      listen_address: "0.0.0.0:54526"
+      listen_address: "0.0.0.0:54527"
     protocol: rfc3164
     location: UTC
+
+connectors:
+      datadog/connector:
 
 service:
   telemetry:
     logs:
       level: "debug"
   pipelines:
-    logs:
-      receivers: [syslog]
-      exporters: [logging, otlphttp/newrelic, otlphttp/jsontest]
+    metrics:
+      receivers: [datadog/connector]
+      processors: [batch]
+      exporters: [logging, datadog]
+      #exporters: [logging]
     traces:
       receivers: [solace/broker1, otlp]
       processors: [batch]
-#      exporters: [logging, otlp/jaeger, otlphttp/newrelic, otlphttp/dynatrace, otlphttp/jsontest]
-      exporters: [logging, otlp/jaeger, otlphttp/newrelic, otlphttp/jsontest]
+      # more exporters: [otlphttp/dynatrace]
+      exporters: [logging, otlp/jaeger, otlphttp/newrelic, otlphttp/jsontest, datadog/connector, datadog]
+      #exporters: [logging, otlp/jaeger, otlphttp/newrelic, otlphttp/jsontest, datadog]
+    logs:
+      receivers: [syslog, otlp]
+      processors: [batch]
+      exporters: [logging, otlphttp/newrelic, otlphttp/jsontest, datadog]
