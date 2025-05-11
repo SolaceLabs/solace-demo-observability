@@ -27,7 +27,7 @@ Run
 ---
 This section provides a short summary to get everything running when the required components are available, make sure to follow the steps in document `docs/SolacePubSub+DistributedTracingDemo.pdf` first.
 
-Open four terminals (using Terminal or something like iTerm):
+Open four terminals (using Terminal or something like iTerm). Create and set values for required environment variables for yaml file and SDKPerf in .env file, see sample.env file for neede variables. In every terminal run `source /path/to/.env`.
 
 _Start Jaeger_
 
@@ -58,10 +58,6 @@ Navigate to http://localhost:16686 to access the Jaeger UI.
 
 _Start OTEL collector_
 
-Create and set values for required environment variables for yaml file and SDKPerf, see sample.env
-
-Run `source /path/to/.env`
-
 ```
 cd ~/otelcol/otelcol-contrib_0.96.0_darwin_arm64
 ./otelcol-contrib --config=../otel-collector-config-single.yaml
@@ -88,7 +84,7 @@ _Start Python script for simple OTEL endpoint_
 
 A simple OTEL endpoint in the form of a Python script that processes incoming POST requests with metrics in (gzipped) JSON from an otel collector exporter and just displays the data received.
 
-`python3 /path/to/simpleotelendpoint.py`
+`python3 simpleotelendpoint.py`
 
 To stop kill the process with `Control-C`.
 

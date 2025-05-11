@@ -38,6 +38,16 @@ exporters:
       site: ${DD_SITE}
       key: ${DD_API_KEY}
 
+  opensearch/trace:
+    http:
+      # endpoint: ${OPENSEARCH_ENDPOINT}  # e.g., http://localhost:9200
+      endpoint: "http://localhost:9200"
+      # username: ${OPENSEARCH_USERNAME}
+      # password: ${OPENSEARCH_PASSWORD}
+      tls:
+        insecure: true  # Set to false in production with valid certs
+    logs_index: "otel-traces"
+
   # otlphttp/dynatrace:
   #   endpoint: ${DYNATRACE_EXPORTER_OTLP_ENDPOINT}
   #   headers:
@@ -97,7 +107,7 @@ service:
       receivers: [solace/broker1, otlp]
       processors: [batch]
       # more exporters: [otlphttp/dynatrace]
-      exporters: [logging, otlp/jaeger, otlphttp/newrelic, otlphttp/jsontest, datadog/connector, datadog]
+      exporters: [logging, otlp/jaeger, otlphttp/newrelic, otlphttp/jsontest, datadog/connector, datadog, opensearch/trace]
       #exporters: [logging, otlp/jaeger, otlphttp/newrelic, otlphttp/jsontest, datadog]
     logs:
       receivers: [syslog, otlp]
